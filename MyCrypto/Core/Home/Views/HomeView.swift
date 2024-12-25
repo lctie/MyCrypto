@@ -11,11 +11,16 @@ struct HomeView: View {
     @EnvironmentObject private var vm: HomeViewModel
     
     @State private var showPortfolio: Bool = false
+//    @State private var showPortfolioView: Bool = false
     
     var body: some View {
         ZStack {
             Color.theme.background
                 .ignoresSafeArea()
+                .sheet(isPresented: $vm.showPortfolioView, content: {
+                    PortfolioView()
+                        .environmentObject(vm)
+                })
             
             VStack {
                 homeHeader
@@ -25,7 +30,7 @@ struct HomeView: View {
                 SearchBarView(searchText: $vm.searchText)
                 
                 columnTitles
-                
+                 
                 if !showPortfolio {
                     allCoinsList
                         .transition(.move(edge: .leading))
@@ -45,6 +50,11 @@ extension HomeView {
         HStack {
             CircleButtonView(iconName: showPortfolio ? "plus" : "info")
                 .animation(.none)
+                .onTapGesture {
+                    if showPortfolio {
+                        vm.showPortfolioView.toggle()
+                    }
+                }
                 .background(
                     CircleButtonAnimationView(animate: $showPortfolio)
                 )
@@ -111,3 +121,4 @@ struct HomeView_Previews: PreviewProvider {
         }
     }
 }
+  
